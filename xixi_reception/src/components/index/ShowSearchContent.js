@@ -1,11 +1,12 @@
-import React, { useState, useImperativeHandle } from 'react';
+import React, { useState, useImperativeHandle, useEffect } from 'react';
 import '../../css/showSearch.css'
 
 function ShowSearchContent({ cRef }) {
     let [display, setDisplay] = useState('none')
+    let [hisList, setHisList] = useState([])
 
     useImperativeHandle(cRef, () => ({
-        // changeVal 就是暴露给父组件的方法
+        // handleBlock,handleNone 就是暴露给父组件的方法
         handleBlock: () => {
             setDisplay('block')
         },
@@ -13,9 +14,20 @@ function ShowSearchContent({ cRef }) {
             setDisplay('none')
         }
     }))
-    // function handleBlock() {
-    //     setDisplay('block')
-    // }
+
+    useEffect(() => {
+        if (window.localStorage.getItem('historySearch') == null) {
+            setHisList([])
+        } else {
+            setHisList(window.localStorage.getItem('historySearch').split(','))
+
+        }
+    }, [])
+
+    const clearHisList = () => {
+        window.localStorage.removeItem('historySearch')
+        setHisList([])
+    }
 
     function handleNone() {
         setDisplay('none')
@@ -25,20 +37,11 @@ function ShowSearchContent({ cRef }) {
             <div className="content">
                 <h4>搜索历史：</h4>
                 <ul className="clearfix">
-                    <li>连衣裙连衣裙连衣</li>
-                    <li>连衣裙连衣裙连衣</li>
-                    <li>连衣裙连衣裙连衣</li>
-                    <li>连衣裙连衣裙连衣</li>
-                    <li>连衣衣裙连衣</li>
-                    <li>连衣裙连衣裙连衣</li>
-                    <li>连衣裙衣</li>
-                    <li>连衣裙连衣裙连衣</li>
-                    <li>连衣裙</li>
-                    <li>连衣裙</li>
-                    <li>连衣裙</li>
-                    <li>连衣裙</li>
+                    {hisList.map((item, index) => {
+                        return <li key={index}>{item}</li>
+                    })}
                 </ul>
-                <span>清空历史记录</span>
+                <span onClick={clearHisList}>清空历史记录</span>
             </div>
             <div className="kongbai" onClick={handleNone}></div>
         </div>
