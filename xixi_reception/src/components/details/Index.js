@@ -1,26 +1,34 @@
 /* eslint no-dupe-keys: 0, no-mixed-operators: 0 */
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
-import { PullToRefresh, ListView, Button } from 'antd-mobile';
+import { ListView } from 'antd-mobile';
+import img from '../../assets/images/list-img.png'
+import title_img from '../../assets/images/title.png'
 
 const data = [
     {
-        img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
+        id: 1,
+        img: img,
         title: 'Meet hotel',
-        des: '1不是所有的兼职汪都需要风吹日晒',
+        des: '2020新款秋季毛衣 鄂尔多斯羊毛 保暖 女秋装 羊毛外衣 百搭 时尚外衣',
+        price: 2000
     },
     {
-        img: 'https://zos.alipayobjects.com/rmsportal/XmwCzSeJiqpkuMB.png',
+        id: 2,
+        img: img,
         title: 'McDonald\'s invites you',
-        des: '2不是所有的兼职汪都需要风吹日晒',
+        des: 'Nike耐克男子秋季新款 AIR JORDAN 1 LOW SE 低帮运动篮球鞋 秋季爆款',
+        price: 560
     },
     {
-        img: 'https://zos.alipayobjects.com/rmsportal/hfVtzEhPzTUewPm.png',
+        id: 3,
+        img: img,
         title: 'Eat the week',
-        des: '3不是所有的兼职汪都需要风吹日晒',
+        des: 'Nike耐克男子秋季新款 AIR JORDAN 1 LOW SE 低帮运动篮球鞋',
+        price: 299
     },
 ];
-const NUM_ROWS = 20;
+const NUM_ROWS = 6;
 let pageIndex = 0;
 
 function genData(pIndex = 0) {
@@ -28,6 +36,7 @@ function genData(pIndex = 0) {
     for (let i = 0; i < NUM_ROWS; i++) {
         dataArr.push(`row - ${(pIndex * NUM_ROWS) + i}`);
     }
+    console.log(dataArr)
     return dataArr;
 }
 
@@ -43,31 +52,18 @@ class Index extends React.Component {
             refreshing: true,
             isLoading: true,
             height: document.documentElement.clientHeight,
-            useBodyScroll: false,
+            useBodyScroll: true,
         };
     }
 
-    // If you use redux, the data maybe at props, you need use `componentWillReceiveProps`
-    // componentWillReceiveProps(nextProps) {
-    //   if (nextProps.dataSource !== this.props.dataSource) {
-    //     this.setState({
-    //       dataSource: this.state.dataSource.cloneWithRows(nextProps.dataSource),
-    //     });
-    //   }
-    // }
-
     componentDidUpdate() {
         console.log(this.state.dataSource)
-        if (this.state.useBodyScroll) {
-            document.body.style.overflow = 'auto';
-        } else {
-            document.body.style.overflow = 'hidden';
-        }
+        document.body.style.overflow = 'hidden';
     }
 
     componentDidMount() {
         const hei = this.state.height - ReactDOM.findDOMNode(this.lv).offsetTop;
-
+        console.log(this)
         setTimeout(() => {
             this.rData = genData();
             this.setState({
@@ -76,22 +72,8 @@ class Index extends React.Component {
                 refreshing: false,
                 isLoading: false,
             });
-        }, 1500);
+        }, 1000);
     }
-
-    // onRefresh = () => {
-    //     this.setState({ refreshing: true, isLoading: true });
-    //     // simulate initial Ajax
-    //     setTimeout(() => {
-    //         this.rData = genData();
-    //         this.setState({
-    //             dataSource: this.state.dataSource.cloneWithRows(this.rData),
-    //             refreshing: false,
-    //             isLoading: false,
-    //         });
-    //     }, 600);
-    // };
-
     onEndReached = (event) => {
         // load new data
         // hasMore: from backend data, indicates whether it is the last page, here is false
@@ -106,84 +88,57 @@ class Index extends React.Component {
                 dataSource: this.state.dataSource.cloneWithRows(this.rData),
                 isLoading: false,
             });
-        }, 1000);
+        }, 1500);
     };
 
+
     render() {
-        const separator = (sectionID, rowID) => {
-            // console.log(sectionID,rowID)
-            return (
-                <div
-                    key={`${sectionID}-${rowID}`}
-                    style={{
-                        backgroundColor: '#F5F5F9',
-                        height: 8,
-                        borderTop: '1px solid #ECECED',
-                        borderBottom: '1px solid #ECECED',
-                    }}
-                />
-            )
-        };
+        function handleClick(e) {
+            console.log(e)
+        }
+
         let index = data.length - 1;
         const row = (rowData, sectionID, rowID) => {
+            // console.log(data.length)
+
             if (index < 0) {
                 index = data.length - 1;
             }
+            // console.log(index)
+
             const obj = data[index--];
             return (
-                <div key={rowID}
-                    style={{
-                        padding: '0 15px',
-                        backgroundColor: 'white',
-                    }}
+                <div key={obj.id}
+                    className="list_item"
+                    onClick={() => { handleClick(obj.id) }}
                 >
-                    <div style={{ height: '50px', lineHeight: '50px', color: '#888', fontSize: '18px', borderBottom: '1px solid #ddd' }}>
-                        {obj.title}
-                    </div>
-                    <div style={{ display: '-webkit-box', display: 'flex', padding: '15px' }}>
-                        <img style={{ height: '63px', width: '63px', marginRight: '15px' }} src={obj.img} alt="" />
-                        <div style={{ display: 'inline-block' }}>
-                            <div style={{ marginBottom: '8px', color: '#000', fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '250px' }}>{obj.des}-{rowData}</div>
-                            <div style={{ fontSize: '16px' }}><span style={{ fontSize: '30px', color: '#FF6E27' }}>{rowID}</span> 元/任务</div>
-                        </div>
-                    </div>
+                    <img src={obj.img} style={{ height: '70%', width: '100%' }} />
+                    <h3 >{obj.des}</h3>
+                    <span className="show_price">¥{obj.price}</span>
                 </div>
             );
         };
-        return (<div>
-            {/* <Button
-                style={{ margin: '30px 15px' }}
-                inline
-                // onClick={() => this.setState({ useBodyScroll: !this.state.useBodyScroll })}
-            >
-                {this.state.useBodyScroll ? 'useBodyScroll' : 'partial scroll'}
-            </Button> */}
+        return (<>
+
             <ListView
-                // key={this.state.useBodyScroll ? '0' : '1'}
                 ref={el => this.lv = el}
                 dataSource={this.state.dataSource}
-                // renderHeader={() => <span>Pull to refresh</span>}
-                renderFooter={() => (<div style={{ padding: 30, textAlign: 'center' }}>
+                renderFooter={() => (<div style={{ height: '30px', padding: 30, textAlign: 'center' }}>
                     {this.state.isLoading ? 'Loading...' : 'Loaded'}
                 </div>)}
                 renderRow={row}
-                renderSeparator={separator}
-                useBodyScroll={false}
+                renderHeader={() => {
+                    return (<h3 className="list_title">热门推荐</h3>)
+                }}
+                useBodyScroll={this.state.useBodyScroll}
                 style={{
                     height: this.state.height,
-                    border: '1px solid #ddd',
                     margin: '5px 0',
                 }}
-                // 下拉刷新方法
-                // pullToRefresh={<PullToRefresh
-                //     // refreshing={this.state.refreshing}
-                //     onRefresh={this.onRefresh}
-                // />}
-                // 上拉加载方法
                 onEndReached={this.onEndReached}
-                pageSize={5}
+                pageSize={20}
             />
-        </div>);
+        </>);
     }
 }
 

@@ -6,6 +6,7 @@ import Details from './components/details/Index'
 function Main() {
     return (
         <Router>
+            {/* <Redirect to="/details" /> */}
             <Redirect to="/index/home" />
             <Route path="/index" component={App} />
             <Route path="/details" component={Details} />

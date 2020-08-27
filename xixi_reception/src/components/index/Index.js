@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { SearchBar, Carousel, Grid, NoticeBar, PullToRefresh, ListView } from 'antd-mobile'
 import ShowSearchContent from './ShowSearchContent'
+import MyListView from '../details/Index'
 import banner_1 from '../../assets/images/banner_1.png'
 import banner_2 from '../../assets/images/banner_2.png'
 import banner_3 from '../../assets/images/banner_3.png'
@@ -90,7 +91,7 @@ function Index(props) {
 			<SearchBar placeholder={searchText} maxLength={8} onFocus={handleBlock} onCancel={handleNone} />
 			{/* 搜索历史区域 */}
 			<ShowSearchContent cRef={childRef} />
-
+			{/* banner区域 */}
 			<Carousel className="space-carousel"
 				frameOverflow="visible"
 				cellSpacing={10}
@@ -124,9 +125,11 @@ function Index(props) {
 				))}
 			</Carousel>
 			<Grid data={data} activeStyle={false} hasLine={false} onClick={handleToGo} />
+			{/* 滚动文字区域 */}
 			<NoticeBar marqueeProps={{ loop: true, style: { padding: '0 7.5px' } }}>
 				{notice}
 			</NoticeBar>
+			{/* news区域 */}
 			<div className="news">
 				<div className="news-left">
 					<img src={newWoman} />
@@ -140,6 +143,8 @@ function Index(props) {
 					</div>
 				</div>
 			</div>
+			{/* 列表区域 */}
+			<MyListView />
 		</>
 	)
 }
